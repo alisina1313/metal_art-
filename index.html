@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MetalArt Gallery — Local Prototype</title>
+  <style>
+    :root{
+      --bg:#0f0f10; --card:#151516; --muted:#a7a5a3; --gold1:#d4af6f; --gold2:#b58f47;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#0b0b0c,#0f0f10);color:#eee}
+    a{color:inherit;text-decoration:none}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--gold1),var(--gold2));display:flex;align-items:center;justify-content:center;color:#071017;font-weight:900;font-size:18px}
+    nav{display:flex;align-items:center;gap:12px}
+    .btn{padding:8px 12px;border-radius:10px;border:0;background:rgba(255,255,255,0.03);color:var(--muted);cursor:pointer;font-weight:700}
+    .btn.primary{background:linear-gradient(90deg,var(--gold1),var(--gold2));color:#071017}
+    .container{max-width:1100px;margin:26px auto;padding:0 16px}
+    .hero{display:flex;gap:22px;align-items:center;padding-top:12px}
+    .left{flex:1}
+    h1{margin:6px 0;font-size:34px;color:var(--gold1)}
+    .lead{color:var(--muted);max-width:720px}
+    .cta{display:inline-block;margin-top:12px;padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,var(--gold1),var(--gold2));color:#071017;font-weight:700}
+    .hero .art{width:360px;border-radius:14px;padding:8px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.12))}
+    .hero img{max-width:100%;border-radius:10px;display:block;box-shadow:0 12px 30px rgba(0,0,0,0.6)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:20px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.12));border:1px solid rgba(255,255,255,0.03);padding:12px;border-radius:12px;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
+    .card:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(0,0,0,0.6)}
+    .card img{width:100%;height:200px;object-fit:cover;border-radius:8px;background:#222}
+    .meta{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+    .title{font-weight:700}
+    .price{font-weight:900;color:var(--gold1)}
+    .actions{display:flex;gap:8px;margin-top:10px}
+    .modal-bg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,0.6);z-index:200}
+    .modal{background:linear-gradient(180deg,#0f0f10,#121213);padding:16px;border-radius:12px;max-width:680px;width:100%;box-shadow:0 16px 50px rgba(0,0,0,0.6)}
+    label{display:block;margin-top:10px;color:var(--muted);font-size:14px}
+    input,textarea,select,button{font-family:inherit}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#eee;margin-top:6px}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    .admin-panel{margin-top:22px;background:rgba(255,255,255,0.02);padding:14px;border-radius:12px}
+    .small{font-size:13px;color:var(--muted)}
+    .drop-area{border:2px dashed rgba(255,255,255,0.04);padding:12px;border-radius:10px;text-align:center;color:var(--muted);cursor:pointer}
+    .drop-area.drag-over{background:rgba(181,143,71,0.06);border-color:rgba(181,143,71,0.18)}
+    footer{margin-top:30px;padding:24px;text-align:center;color:var(--muted)}
+    @media(max-width:880px){.hero{flex-direction:column;align-items:flex-start}.hero .art{width:100%}.grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">MA</div>
+      <div>
+        <div style="font-weight:800">MetalArt Gallery</div>
+        <divclass="small" style="margin-top:3px">Handmade metal sculptures</div>
+      </div>
+    </div>
+    <nav>
+      <a class="btn" href="#home">Home</a>
+      <a class="btn" id="viewGalleryBtn" href="#gallery">Gallery</a>
+      <a class="btn" href="#contact">Contact</a>
+      <button id="adminBtn" class="btn">Admin</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero" id="home">
+      <div class="left">
+        <div class="eyebrow small" style="letter-spacing:1px">ARTISAN METAL WORKS</div>
+        <h1>Sculptures Made From Bolts & Gears</h1>
+        <p class="lead">Unique handcrafted metal sculptures from reclaimed parts. The gallery is empty until the artist uploads works via the Admin panel.</p>
+        <div style="margin-top:12px">
+          <a class="cta" id="ctaViewGallery" href="#gallery">View Gallery</a>
+        </div>
+      </div>
+      <div class="art">
+        <!-- Local hero image: make sure file exists at ./assets/image/1761293642538.jpeg -->
+        <img src="SnapInsta.to_548984517_18034986212704751_4019946988234699830_n.jpg" alt="metal art sample" id="heroImage">
+      </div>
+    </section>
+
+    <section id="gallery">
+      <h2 style="margin-top:22px">Gallery</h2>
+      <p class="small">Gallery is empty until the artist adds products via the Admin panel.</p>
+
+      <div class="grid" id="productGrid"></div>
+    </section>
+
+    <section id="contact">
+      <h2 style="margin-top:22px">Contact</h2>
+      <p class="small">Email: <a href="mailto:hello@metalart.example">hello@metalart.example</a> — Phone: +1 555 123 4567</p>
+    </section>
+
+    <div style="margin-top:28px;display:flex;gap:12px;align-items:center;justify-content:space-between">
+      <div class="small">Prototype (local). Products & orders are stored in your browser.</div>
+      <div>
+        <button class="btn" id="showOrdersLocal">Show local orders</button>
+        <button class="btn" id="clearData">Clear local data</button>
+      </div>
+    </div>
+
+    <!-- Admin panel area (hidden until login) -->
+    <div id="adminArea" style="display:none" class="admin-panel">
+      <h3>Admin Panel</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:300px">
+          <h4>Add Product</h4>
+          <div class="small">Drag & drop an image or click to select a file from your computer. Image will be stored locally in your browser.</div>
+
+          <label>Image</label>
+          <div id="dropArea" class="drop-area">Drop image here or click to select</div>
+          <input type="file" id="pFile" accept="image/*" style="display:none">
+          <div id="previewWrap" style="margin-top:8px"></div>
+
+          <label>Title <input id="pTitle"></label>
+          <label>Price (USD) <input id="pPrice" type="number" min="0"></label>
+          <label>Description <textarea id="pDesc"></textarea></label>
+
+          <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn" id="addProductBtn">Add Product</button>
+            <button class="btn" id="saveProductsBtn">Save</button>
+          </div>
+        </div>
+
+        <div style="flex:1;min-width:300px">
+          <h4>Orders</h4>
+          <div id="ordersList" style="max-height:320px;overflow:auto"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <small class="small">© MetalArt Gallery — Local Prototype.</small>
+    </footer>
+  </main>
+
+  <!-- Order Modal -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button id="closeModal" style="float:right;background:transparent;border:0;color:var(--muted);font-weight:700">✕</button>
+      <h3 id="modalTitle">Order</h3>
+      <form id="orderForm">
+        <input type="hidden" id="productId" name="productId">
+        <label>Name <input name="name" required></label>
+        <label>Email <input name="email" type="email" required></label>
+        <label>Phone <input name="phone" required></label>
+        <label>Address <textarea name="address" rows="3" required></textarea></label>
+        <label>Quantity <input name="quantity" type="number" value="1" min="1" required></label>
+        <label>Notes <input name="notes"></label>
+        <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+          <button type="submit" class="btn primary">Place Order</button>
+          <button type="button" id="cancelOrder" class="btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Login Modal -->
+  <div class="modal-bg" id="adminModal" style="display:none">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button id="closeAdmin" style="float:right;background:transparent;border:0;color:var(--muted);font-weight:700">✕</button>
+      <h3>Admin Login</h3>
+      <form id="adminForm">
+        <label>Password <input id="adminPass" type="password" required></label>
+        <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+          <button type="submit" class="btn primary">Login</button>
+          <button type="button" id="cancelAdmin" class="btn">Cancel</button>
+        </div>
+      </form>
+      <p class="small" style="margin-top:10px">Prototype note: default password = <strong>admin123</strong>. Change it in the code for real deployments.</p>
+    </div>
+  </div>
+
+  <script>
+    /* Local storage keys */
+    const STORAGE_KEYS = { products: 'ma_products_local', orders: 'ma_orders_local' };
+
+    /* Products initially empty (gallery stays empty until admin adds items) */
+    function loadProducts(){
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.products);
+        return raw ? JSON.parse(raw) : [];
+      } catch(e){ console.error(e); return []; }
+    }
+    function saveProducts(list){ localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(list)); }
+
+    function loadOrders(){ try { const raw = localStorage.getItem(STORAGE_KEYS.orders); return raw ? JSON.parse(raw) : []; } catch(e){ return []; } }
+    function saveOrders(list){ localStorage.setItem(STORAGE_KEYS.orders, JSON.stringify(list)); }
+
+    /* Render gallery */
+    const grid = document.getElementById('productGrid');
+    function renderProducts(){
+      const list = loadProducts();
+      grid.innerHTML = '';
+      if(!list.length){
+        const p = document.createElement('div'); p.className = 'small'; p.textContent = 'No products yet. Admin can add products from the Admin panel.'; grid.appendChild(p); return;
+      }
+      list.forEach(pdata => {
+        const card = document.createElement('div'); card.className = 'card';
+        card.innerHTML = `
+          <img src="${pdata.image}" alt="${pdata.title}">
+          <div class="meta">
+            <div>
+              <div class="title">${pdata.title}</div>
+              <div class="small">${pdata.desc || ''}</div>
+            </div>
+            <div style="text-align:right"><div class="price">$${pdata.price}</div></div>
+          </div>
+          <div class="actions">
+            <button class="btn" onclick="openOrder('${pdata.id}')">Order Now</button>
+            <button class="btn" onclick="viewDetails('${pdata.id}')">Details</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    /* Order modal */
+    const modalBg = document.getElementById('modalBg');
+    const modalTitle = document.getElementById('modalTitle');
+    const productIdInput = document.getElementById('productId');
+    function openOrder(id){
+      const p = loadProducts().find(x => x.id === id);
+      if(!p) return alert('Product not found');
+      modalTitle.textContent = `Order — ${p.title} ($${p.price})`;
+      productIdInput.value = id;
+      modalBg.style.display = 'flex';
+    }
+    document.getElementById('closeModal').addEventListener('click', ()=> modalBg.style.display = 'none');
+    document.getElementById('cancelOrder').addEventListener('click', ()=> modalBg.style.display = 'none');
+
+    document.getElementById('orderForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const fm = new FormData(e.target);
+      const order = Object.fromEntries(fm.entries());
+      const prod = loadProducts().find(p => p.id === order.productId);order.id = 'o' + Date.now();
+      order.created = new Date().toISOString();
+      order.productTitle = prod ? prod.title : '';
+      order.productPrice = prod ? prod.price : 0;
+      const list = loadOrders(); list.unshift(order); saveOrders(list);
+      alert('Order saved locally. In production this would be sent to the server.');
+      modalBg.style.display = 'none';
+      e.target.reset();
+    });
+
+    function viewDetails(id){
+      const p = loadProducts().find(x => x.id === id);
+      if(!p) return alert('Not found');
+      alert(p.title + "\n\n" + (p.desc || '') + "\n\nPrice: $" + p.price);
+    }
+
+    /* Admin login & panel */
+    const adminBtn = document.getElementById('adminBtn');
+    const adminModal = document.getElementById('adminModal');
+    const adminArea = document.getElementById('adminArea');
+    adminBtn.addEventListener('click', () => {
+      adminModal.style.display = 'flex';
+      document.getElementById('adminPass').focus();
+    });
+    document.getElementById('closeAdmin').addEventListener('click', () => adminModal.style.display = 'none');
+    document.getElementById('cancelAdmin').addEventListener('click', () => adminModal.style.display = 'none');
+
+    document.getElementById('adminForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const passInput = document.getElementById('adminPass');
+      const pass = passInput.value.trim();
+      if(pass === 'admin123'){
+        passInput.value = '';
+        adminModal.style.display = 'none';
+        adminArea.style.display = 'block';
+        populateAdmin();
+        alert('Logged in as admin (prototype).');
+      } else {
+        alert('Incorrect password');
+      }
+    });
+
+    /* Drag & Drop image upload (local) */
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('pFile');
+    const previewWrap = document.getElementById('previewWrap');
+    let selectedFile = null;
+    function showPreview(dataUrl){
+      previewWrap.innerHTML = `<img src="${dataUrl}" style="width:160px;height:110px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.04)">`;
+    }
+    dropArea.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if(!f) return;
+      selectedFile = f;
+      const reader = new FileReader();
+      reader.onload = () => showPreview(reader.result);
+      reader.readAsDataURL(f);
+    });
+    dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.classList.add('drag-over'); });
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('drag-over'));
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault(); dropArea.classList.remove('drag-over');
+      const f = e.dataTransfer.files[0]; if(!f) return;
+      selectedFile = f;
+      const reader = new FileReader();
+      reader.onload = () => showPreview(reader.result);
+      reader.readAsDataURL(f);
+    });
+
+    /* Add product: read selectedFile -> base64 -> localStorage */
+    document.getElementById('addProductBtn').addEventListener('click', () => {
+      const title = document.getElementById('pTitle').value.trim();
+      const price = Number(document.getElementById('pPrice').value) || 0;
+      const desc = document.getElementById('pDesc').value.trim();
+      if(!title || !selectedFile){ alert('Please provide a title and select an image.'); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        const list = loadProducts();
+        const id = 'p' + Date.now();
+        list.unshift({ id, title, price, image: dataUrl, desc });
+        saveProducts(list);
+        // reset form
+        document.getElementById('pTitle').value = '';
+        document.getElementById('pPrice').value = '';
+        document.getElementById('pDesc').value = '';
+        selectedFile = null;
+        previewWrap.innerHTML = '';
+        fileInput.value = '';
+        renderProducts();
+        alert('Product added locally and gallery updated.');
+      };
+      reader.readAsDataURL(selectedFile);
+    });
+
+    document.getElementById('saveProductsBtn').addEventListener('click', () => { saveProducts(loadProducts()); alert('Products saved locally.'); });
+
+    /* Admin orders list populate */
+    function populateAdmin(){
+      const orders = loadOrders();
+      const out = document.getElementById('ordersList');
+      out.innerHTML = '';
+      if(orders.length === 0){ out.innerHTML = '<div class="small">No orders yet.</div>'; return; }
+      orders.forEach(o => {
+        const el = document.createElement('div');
+        el.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+        el.style.padding = '8px 0';
+        el.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <strong>${escapeHtml(o.productTitle)}</strong> — ${escapeHtml(o.name)}
+              <div class="small">${escapeHtml(o.email)} • ${escapeHtml(o.phone)}</div>
+            </div>
+            <div style="text-align:right">
+              <div class="small">${new Date(o.created).toLocaleString()}</div>
+              <div style="margin-top:6px">
+                <button class="btn" onclick="markShipped('${o.id}')">Mark Shipped</button>
+                <button class="btn" onclick="deleteOrder('${o.id}')">Delete</button>
+              </div>
+            </div>
+          </div>
+        `;
+        out.appendChild(el);
+      });
+    }
+
+    window.markShipped = function(id){
+      const list = loadOrders();
+      const idx = list.findIndex(x => x.id === id);
+      if(idx > -1){ list[idx].status = 'shipped'; saveOrders(list); populateAdmin(); alert('Marked as shipped (local).'); }
+    };
+    window.deleteOrder = function(id){
+      let list = loadOrders(); list = list.filter(x => x.id !== id); saveOrders(list); populateAdmin(); renderProducts();
+    };
+
+    /* util buttons */
+    document.getElementById('showOrdersLocal').addEventListener('click', () => {
+      const o = loadOrders();
+      alert('Local orders count: ' + o.length + '\nOpen Admin → Orders to see details (login required)');
+    });
+
+    document.getElementById('clearData').addEventListener('click', () => {
+      if(confirm('Clear all local data?')){
+        localStorage.removeItem(STORAGE_KEYS.products);
+        localStorage.removeItem(STORAGE_KEYS.orders);
+        renderProducts();
+        alert('Cleared');
+      }
+    });
+
+    /* small helper to avoid injection in inserted HTML */
+    function escapeHtml(str){
+      if(!str) return '';
+      return String(str).replace(/[&<>"']/g, function (m) {
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+      });
+    }
+
+    /* view gallery smooth scroll from hero CTA */
+    document.getElementById('ctaViewGallery').addEventListener('click', function(e){
+      e.preventDefault();
+      document.getElementById('gallery').scrollIntoView({behavior:'smooth'});
+    });
+
+    /* initial render */
+    renderProducts();
+  </script>
+</body>
+</html>
